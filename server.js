@@ -59,7 +59,7 @@ function checkLoggedIn(req, res, next) {
     const isLoggedIn = req.isAuthenticated() && req.user
     if (!isLoggedIn) {
         return res.status(401).json({
-            error: 'You must log in'
+            error: 'NICE TRY, Please log in'
         })
     }
     next();
@@ -85,7 +85,9 @@ app.get('/auth/google/callback', passport.authenticate('google', {
     })
 
 app.get('/secret', checkLoggedIn, (req, res) => {
-    return res.send("Your personal secret value is 42!!!")
+    return res.status(401).json({
+        "error": "You have to be logged in..👹👿👹👿👹👿👿👿👹👹😈😈"
+    })
 })
 
 app.get('/failure', checkLoggedIn, (req, res) => {

@@ -49,13 +49,14 @@ app.use(helmet())
 app.use(cookieSession({
     name: 'session',
     maxAge: 24 * 60 * 60 * 1000,
-    keys: [config.COOKIE_KEY_1, config.COOKIE_KEY_2]
-}))
+  keys: [config.COOKIE_KEY_1, config.COOKIE_KEY_2]
+ }))
 app.use(passport.initialize())
 app.use(passport.session())
 
 function checkLoggedIn(req, res, next) {
     console.log('current user is:', req.user);
+    console.log('current request is:', req.isAuthenticated());
     const isLoggedIn = req.isAuthenticated() && req.user
     if (!isLoggedIn) {
         return res.status(401).json({
@@ -64,8 +65,6 @@ function checkLoggedIn(req, res, next) {
     }
     next();
 }
-
-app.use(helmet())
 
 app.get('/auth/google', passport.authenticate('google', {
     scope: ['email']
@@ -85,8 +84,8 @@ app.get('/auth/google/callback', passport.authenticate('google', {
     })
 
 app.get('/secret', checkLoggedIn, (req, res) => {
-    return res.status(401).json({
-        "error": "You have to be logged in..👹👿👹👿👹👿👿👿👹👹😈😈"
+    return res.status(200).json({
+        "Cool": "I think you are logged in..👹👿👹👿👹👿👿👿👹👹😈😈"
     })
 })
 

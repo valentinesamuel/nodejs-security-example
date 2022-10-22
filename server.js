@@ -47,10 +47,10 @@ const app = express()
 app.use(helmet())
 
 app.use(cookieSession({
-    name: 'session',
+    name: 'cookieSession',
     maxAge: 24 * 60 * 60 * 1000,
-  keys: [config.COOKIE_KEY_1, config.COOKIE_KEY_2]
- }))
+    keys: [config.COOKIE_KEY_1, config.COOKIE_KEY_2]
+}))
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -80,13 +80,27 @@ app.get('/auth/google/callback', passport.authenticate('google', {
 
     app.get('/auth/logout', (req, res) => {
         req.logOut()
+        console.log('Logged Out!!')
         return res.redirect('/')
     })
 
 app.get('/secret', checkLoggedIn, (req, res) => {
-    return res.status(200).json({
-        "Cool": "I think you are logged in..👹👿👹👿👹👿👿👿👹👹😈😈"
-    })
+    req.session.cartItems = [
+        {
+            item: "Rice",
+            quantity: 2
+        },
+        {
+            item: "Raspberry",
+            quantity: 41
+        },
+        {
+            item: "Banana",
+            quantity: 25
+        },
+    ]
+    console.log(req.session)
+    return res.status(200).json(req.session.cartItems)
 })
 
 app.get('/failure', checkLoggedIn, (req, res) => {
@@ -97,9 +111,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
 
-https.createServer({
-    key: fs.readFileSync("key.pem"),
-    cert: fs.readFileSync("cert.pem")
-}, app).listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}.....`)
 })
